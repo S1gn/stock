@@ -7,7 +7,7 @@ import com.s1gn.stock.vo.resp.LoginRespVo;
 import com.s1gn.stock.vo.resp.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.Map;
 /**
  * @ClassName UserController
  * @Description 用户web层接口资源bean
@@ -44,5 +44,16 @@ public class UserController {
     public R<LoginRespVo> login(@RequestBody LoginReqVo loginReqVo) {
         R<LoginRespVo> r = userService.login(loginReqVo);
         return r;
+    }
+    /**
+     * @Auther s1gn
+     * @Description 生成图片验证码
+     * @Date 2024/3/21 15:37
+     * @Param
+     * @Return * @return {@link R<Map> }
+     **/
+    @GetMapping("/captcha")
+    public R<Map> getCaptchaCode() {
+        return userService.getCapthcaCode();
     }
 }

@@ -11,7 +11,8 @@ import lombok.Data;
  */
 @Data
 public class LoginReqVo {
-    private String userName;
+    private String username;
     private String password;
-    private String checkCode;
+    private String code;
+    private String sessionId;
 }
