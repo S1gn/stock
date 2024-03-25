@@ -1,6 +1,11 @@
 package com.s1gn.stock.mapper;
 
+import com.s1gn.stock.pojo.domain.InnerMarketDomain;
 import com.s1gn.stock.pojo.entity.StockMarketIndexInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author zzy
@@ -21,5 +26,13 @@ public interface StockMarketIndexInfoMapper {
     int updateByPrimaryKeySelective(StockMarketIndexInfo record);
 
     int updateByPrimaryKey(StockMarketIndexInfo record);
-
+    /**
+     * @Auther s1gn
+     * @Description 根据日期和编码获取大盘数据
+     * @Date 2024/3/25 21:43
+     * @Param * @param curDate
+     * @param marketCodes
+     * @Return * @return {@link List< InnerMarketDomain> }
+     **/
+    List<InnerMarketDomain> getMarketInfo(@Param("curDate") Date curDate, @Param("marketCodes") List<String> marketCodes);
 }

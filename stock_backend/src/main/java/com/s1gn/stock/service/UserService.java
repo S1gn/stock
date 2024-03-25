@@ -5,6 +5,8 @@ import com.s1gn.stock.vo.req.LoginReqVo;
 import com.s1gn.stock.vo.resp.LoginRespVo;
 import com.s1gn.stock.vo.resp.R;
 
+import java.util.Map;
+
 /**
  * @ClassName UserService
  * @Description
@@ -30,4 +32,6 @@ public interface UserService {
      * @Return * @return {@link R< LoginRespVo> }
      **/
     R<LoginRespVo> login(LoginReqVo loginReqVo);
+
+    R<Map> getCapthcaCode();
 }
