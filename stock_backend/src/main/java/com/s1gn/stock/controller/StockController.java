@@ -1,5 +1,7 @@
 package com.s1gn.stock.controller;
 
+import cn.hutool.http.HttpResponse;
+import cn.hutool.http.server.HttpServerResponse;
 import com.s1gn.stock.pojo.domain.InnerMarketDomain;
 import com.s1gn.stock.pojo.domain.StockBlockDomain;
 import com.s1gn.stock.pojo.domain.StockUpdownDomain;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -78,5 +81,20 @@ public class StockController {
     @GetMapping("/stock/updown/count")
     public R<Map<String, List>> getStockUpDownCount(){
         return stockService.getStockUpDownCount();
+    }
+    /**
+     * @Auther s1gn
+     * @Description 导出指定页数的股票涨跌数据excel
+     * @Date 2024/3/26 22:12
+     * @param page
+     * @param pageSize
+     * @param response
+     * @return void
+     **/
+    @GetMapping("/stock/export")
+    public void exportStockUpDownInfo(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
+                                      @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize,
+                                      HttpServletResponse response){
+        stockService.exportStockUpDownInfo(page, pageSize, response);
     }
 }
