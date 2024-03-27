@@ -2,10 +2,12 @@ package com.s1gn.stock.mapper;
 
 import com.s1gn.stock.pojo.domain.InnerMarketDomain;
 import com.s1gn.stock.pojo.entity.StockMarketIndexInfo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author zzy
@@ -35,4 +37,17 @@ public interface StockMarketIndexInfoMapper {
      * @Return * @return {@link List< InnerMarketDomain> }
      **/
     List<InnerMarketDomain> getMarketInfo(@Param("curDate") Date curDate, @Param("marketCodes") List<String> marketCodes);
+    
+    /**
+     * @Auther s1gn
+     * @Description 获取一段范围内的交易量
+     * @Date 2024/3/27 21:28
+     * @param tStartDate 开始时间
+     * @param tEndDate  结束时间
+     * @param inner  大盘码
+     * @return {@link List< Map> }
+     **/
+    List<Map> getSumAmtInfo(@Param("openDate")Date tStartDate,
+                            @Param("endDate")Date tEndDate,
+                            @Param("marketCodes")List<String> inner);
 }

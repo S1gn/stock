@@ -19,4 +19,6 @@ public class StockInfoConfig {
     private List<String> inner; //国内大盘数据
 
     private List<String> outer; //国外大盘数据
+
+    private List<String> upDownRange; //板块数据
 }

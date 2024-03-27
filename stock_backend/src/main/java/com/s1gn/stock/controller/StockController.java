@@ -97,4 +97,26 @@ public class StockController {
                                       HttpServletResponse response){
         stockService.exportStockUpDownInfo(page, pageSize, response);
     }
+
+    /**
+     * @Auther s1gn
+     * @Description 统计大盘T日和T-1日的每分钟交易量
+     * @Date 2024/3/27 21:20
+     * @return {@link R< Map< String, List>> }
+     **/
+    @GetMapping("/stock/tradeAmt")
+    public R<Map<String, List>> getCompareStockTradeAmt(){
+        return stockService.getCompareStockTradeAmt();
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 获取当日股票涨幅区间统计数量
+     * @Date 2024/3/27 21:50
+     * @return {@link R< Map> }
+     **/
+    @GetMapping("/stock/updown")
+    public R<Map> getIncreaseRangeInfo()
+    {
+            return stockService.getIncreaseRangeInfo(); }
 }

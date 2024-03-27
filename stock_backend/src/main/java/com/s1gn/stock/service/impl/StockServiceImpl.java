@@ -27,10 +27,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName StockServiceImpl
@@ -184,5 +181,65 @@ public class StockServiceImpl implements StockService {
                 log.error("响应数据失败,当前时间:{}", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
             }
         }
+    }
+
+    @Override
+    public R<Map<String, List>> getCompareStockTradeAmt() {
+        // 获取T日开盘点和最新时间
+        DateTime tEndDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date tEndDate = tEndDateTime.toDate();
+        Date tstartDate = DateTimeUtil.getOpenDate(tEndDateTime).toDate();
+        //TODO  mock数据
+        tstartDate=DateTime.parse("2022-01-03 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        tEndDate=DateTime.parse("2022-01-03 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 获取T-1日开盘点和最新时间
+        DateTime preTEndDateTime = DateTimeUtil.getPreviousTradingDay(tEndDateTime);
+        Date preTEndDate = preTEndDateTime.toDate();
+        Date preTStartDate = DateTimeUtil.getOpenDate(preTEndDateTime).toDate();
+        //TODO  mock数据
+        preTStartDate=DateTime.parse("2022-01-02 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        preTEndDate=DateTime.parse("2022-01-02 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 获取T日和T-1日的每分钟交易量
+        List<Map> tData = stockMarketIndexInfoMapper.getSumAmtInfo(tstartDate, tEndDate, stockInfoConfig.getInner());
+        List<Map> preTData = stockMarketIndexInfoMapper.getSumAmtInfo(preTStartDate, preTEndDate, stockInfoConfig.getInner());
+        // 封装返回结果
+        HashMap<String, List> info = new HashMap<String, List>();
+        info.put("amtList", tData);
+        info.put("yesAmtlist", preTData);
+        return R.ok(info);
+    }
+
+    @Override
+    public R<Map> getIncreaseRangeInfo() {
+        // 获取最新交易时间，精确到分钟，秒和毫秒为0
+        DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date curDate = curDateTime.toDate();
+        curDate = DateTime.parse("2022-01-06 9:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 获取当日股票涨幅区间统计数量
+        List<Map> data = stockBlockRtInfoMapper.getIncreaseRangeInfoByDate(curDate);
+        // 优化排序结果
+        List<String> upDownRange = stockInfoConfig.getUpDownRange();
+        List<Map> result = new ArrayList<>();
+        for (String str : upDownRange) {
+            Map map = null;
+            for (Map item : data) {
+                if (item.containsValue(str)) {
+                    map = item;
+                    break;
+                }
+            }
+            if(map==null){
+                map = new HashMap();
+                map.put("title", str);
+                map.put("count", 0);
+            }
+            result.add(map);
+        }
+
+        // 封装返回结果
+        HashMap<String, Object> info = new HashMap<String, Object>();
+        info.put("time", curDateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        info.put("infos", result);
+        return R.ok(info);
     }
 }
