@@ -1,6 +1,12 @@
 package com.s1gn.stock.mapper;
 
+import com.s1gn.stock.pojo.domain.Stock4DayDomain;
+import com.s1gn.stock.pojo.domain.Stock4MinuteDomain;
 import com.s1gn.stock.pojo.entity.StockRtInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
 
 /**
 * @author zzy
@@ -22,4 +28,24 @@ public interface StockRtInfoMapper {
 
     int updateByPrimaryKey(StockRtInfo record);
 
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码查询时间范围内股票的每分钟信息
+     * @Date 2024/3/31 22:13
+     * @param openDate 开盘时间
+     * @param endDate  当前时间
+     * @param stockCode   股票代码
+     * @return {@link List< Stock4MinuteDomain> }
+     **/
+    List<Stock4MinuteDomain> getStock4MinuteInfo(@Param("openDate") Date openDate, @Param("endDate") Date endDate, @Param("stockCode") String stockCode);
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码查询时间范围内股票的日K线信息
+     * @Date 2024/3/31 22:44
+     * @param startDate  开始时间
+     * @param endDate  结束时间
+     * @param stockCode   股票代码
+     * @return {@link List< Stock4DayDomain> }
+     **/
+    List<Stock4DayDomain> getStock4DayInfo(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("stockCode") String stockCode);
 }

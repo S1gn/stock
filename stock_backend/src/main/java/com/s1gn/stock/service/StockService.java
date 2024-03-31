@@ -1,12 +1,8 @@
 package com.s1gn.stock.service;
 
-import cn.hutool.http.server.HttpServerResponse;
-import com.s1gn.stock.pojo.domain.InnerMarketDomain;
-import com.s1gn.stock.pojo.domain.StockBlockDomain;
-import com.s1gn.stock.pojo.domain.StockUpdownDomain;
+import com.s1gn.stock.pojo.domain.*;
 import com.s1gn.stock.vo.resp.PageResult;
 import com.s1gn.stock.vo.resp.R;
-import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -29,4 +25,8 @@ public interface StockService {
     R<Map<String, List>> getCompareStockTradeAmt();
 
     R<Map> getIncreaseRangeInfo();
+
+    R<List<Stock4MinuteDomain>> getStockScreenTimeSharing(String stockCode);
+
+    R<List<Stock4DayDomain>> getStockScreenDKline(String stockCode);
 }

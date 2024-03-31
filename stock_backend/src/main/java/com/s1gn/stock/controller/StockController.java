@@ -2,9 +2,7 @@ package com.s1gn.stock.controller;
 
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.server.HttpServerResponse;
-import com.s1gn.stock.pojo.domain.InnerMarketDomain;
-import com.s1gn.stock.pojo.domain.StockBlockDomain;
-import com.s1gn.stock.pojo.domain.StockUpdownDomain;
+import com.s1gn.stock.pojo.domain.*;
 import com.s1gn.stock.service.StockService;
 import com.s1gn.stock.vo.resp.PageResult;
 import com.s1gn.stock.vo.resp.R;
@@ -119,4 +117,26 @@ public class StockController {
     public R<Map> getIncreaseRangeInfo()
     {
             return stockService.getIncreaseRangeInfo(); }
+    /**
+     * @Auther s1gn
+     * @Description 获取指定股票的分时数据
+     * @Date 2024/3/31 22:02
+     * @param stockCode 股票编码
+     * @return {@link R< List< Stock4MinuteDomain>> }
+     **/
+    @GetMapping("/stock/screen/time-sharing")
+    public R<List<Stock4MinuteDomain>> getStockScreenTimeSharing(@RequestParam(value = "code", required = true) String stockCode){
+        return stockService.getStockScreenTimeSharing(stockCode);
+    }
+    /**
+     * @Auther s1gn
+     * @Description 获取指定股票的日K线数据
+     * @Date 2024/3/31 22:39
+     * @param stockCode  股票编码
+     * @return {@link R< List< Stock4DayDomain>> }
+     **/
+    @GetMapping("/stock/screen/dkline")
+    public R<List<Stock4DayDomain>> getStockScreenDKline(@RequestParam(value = "code", required = true) String stockCode){
+        return stockService.getStockScreenDKline(stockCode);
+    }
 }

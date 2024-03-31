@@ -1,6 +1,5 @@
 package com.s1gn.stock.service.impl;
 
-import cn.hutool.http.server.HttpServerResponse;
 import com.alibaba.excel.EasyExcel;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
@@ -8,9 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.s1gn.stock.mapper.StockBlockRtInfoMapper;
 import com.s1gn.stock.mapper.StockMarketIndexInfoMapper;
 import com.s1gn.stock.mapper.StockRtInfoMapper;
-import com.s1gn.stock.pojo.domain.InnerMarketDomain;
-import com.s1gn.stock.pojo.domain.StockBlockDomain;
-import com.s1gn.stock.pojo.domain.StockUpdownDomain;
+import com.s1gn.stock.pojo.domain.*;
 import com.s1gn.stock.pojo.vo.StockInfoConfig;
 import com.s1gn.stock.service.StockService;
 import com.s1gn.stock.utils.DateTimeUtil;
@@ -48,6 +45,9 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     private StockBlockRtInfoMapper stockBlockRtInfoMapper;
+
+    @Autowired
+    private StockRtInfoMapper stockRtInfoMapper;
 
     /**
      * @Auther s1gn
@@ -241,5 +241,31 @@ public class StockServiceImpl implements StockService {
         info.put("time", curDateTime.toString("yyyy-MM-dd HH:mm:ss"));
         info.put("infos", result);
         return R.ok(info);
+    }
+
+    @Override
+    public R<List<Stock4MinuteDomain>> getStockScreenTimeSharing(String stockCode) {
+        // 获取开盘时间和当前时间
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2021-12-30 14:47:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Date openDate = DateTimeUtil.getOpenDate(endDateTime).toDate();
+        openDate=DateTime.parse("2021-12-30 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 查询
+        List<Stock4MinuteDomain> data = stockRtInfoMapper.getStock4MinuteInfo(openDate, endDate, stockCode);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Stock4DayDomain>> getStockScreenDKline(String stockCode) {
+        // 获取起始时间和结束时间
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        DateTime startDateTime = endDateTime.minusMonths(3);
+        Date startDate=DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 查询
+        List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfo(startDate, endDate, stockCode);
+        return R.ok(data);
     }
 }
