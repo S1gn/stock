@@ -258,14 +258,16 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public R<List<Stock4DayDomain>> getStockScreenDKline(String stockCode) {
-        // 获取起始时间和结束时间
+        // 获取起始时间和结束时间范围内的最后交易时间集合
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
         endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         DateTime startDateTime = endDateTime.minusMonths(3);
         Date startDate=DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<Date> everyDayLastTime = stockRtInfoMapper.getEveryDayLastTime(startDate, endDate, stockCode);
         // 查询
-        List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfo(startDate, endDate, stockCode);
+        List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfoByTimeList(everyDayLastTime, stockCode);
+//        List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfo(startDate, endDate, stockCode);
         return R.ok(data);
     }
 }

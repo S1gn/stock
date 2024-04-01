@@ -48,4 +48,23 @@ public interface StockRtInfoMapper {
      * @return {@link List< Stock4DayDomain> }
      **/
     List<Stock4DayDomain> getStock4DayInfo(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("stockCode") String stockCode);
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码查询时间范围内每天的最后一次交易时间
+     * @Date 2024/4/1 23:06
+     * @param startDate
+     * @param endDate
+     * @param stockCode
+     * @return {@link List< Date> }
+     **/
+    List<Date> getEveryDayLastTime(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("stockCode") String stockCode);
+    /**
+     * @Auther s1gn
+     * @Description 根据指定的交易时间查询交易信息
+     * @Date 2024/4/1 23:09
+     * @param everyDayLastTime
+     * @param stockCode
+     * @return {@link List< Stock4DayDomain> }
+     **/
+    List<Stock4DayDomain> getStock4DayInfoByTimeList(@Param("timeList") List<Date> everyDayLastTime, @Param("stockCode") String stockCode);
 }
