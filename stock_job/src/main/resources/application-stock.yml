@@ -1,0 +1,13 @@
+stock:
+  inner:
+    - sh000001
+    - sz399001
+
+  outer:
+    - int_dji
+    - int_nasdaq
+    - int_hangseng
+    - int_nikkei
+    - b_FSSTI
+  marketUrl: https://hq.sinajs.cn/list=
+  blockUrl: http://vip.stock.finance.sina.com.cn/q/view/newSinaHy.php

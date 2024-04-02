@@ -21,4 +21,8 @@ public class StockInfoConfig {
     private List<String> outer; //国外大盘数据
 
     private List<String> upDownRange; //板块数据
+
+    private String marketUrl; //大盘数据url
+
+    private String blockUrl; //板块数据url
 }
