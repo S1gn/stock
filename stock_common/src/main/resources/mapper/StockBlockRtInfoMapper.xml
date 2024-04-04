@@ -165,6 +165,20 @@
                 <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+    <insert id="insertBatch">
+        insert into stock_block_rt_info
+        ( id,label,block_name
+        ,company_num,avg_price,updown_rate
+        ,trade_amount,trade_volume,cur_time
+        )
+        values
+            <foreach collection="infoList" item="info" separator=",">
+                (#{info.id,jdbcType=BIGINT},#{info.label,jdbcType=VARCHAR},#{info.blockName,jdbcType=VARCHAR}
+               ,#{info.companyNum,jdbcType=INTEGER},#{info.avgPrice,jdbcType=DECIMAL},#{info.updownRate,jdbcType=DECIMAL}
+               ,#{info.tradeAmount,jdbcType=BIGINT},#{info.tradeVolume,jdbcType=DECIMAL},#{info.curTime,jdbcType=TIMESTAMP}
+               )
+            </foreach>
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.s1gn.stock.pojo.entity.StockBlockRtInfo">
         update stock_block_rt_info
         <set>

@@ -1,28 +1,36 @@
 package com.s1gn.stock;
 
-import org.junit.Test;
+import com.s1gn.stock.service.StockTimerTaskService;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.client.RestTemplate;
 
 /**
  * @ClassName TestRestTemplate
  * @Description
  * @Author S1gn
- *
- * @Date 2024/4/2 16:28
+ * @Date 2024/4/3 15:30
  * @Version 1.0
  */
+
 @SpringBootTest
 public class TestRestTemplate {
 
     @Autowired
-    private RestTemplate restTemplate;
+    private StockTimerTaskService stockTimerTaskService;
 
     @Test
-    public void test() {
-        String url = "http://localhost:8080/stock/stockInfo";
-        String result = restTemplate.getForObject(url, String.class);
-        System.out.println(result);
+    public void testGetInnerMarketInfo() {
+        stockTimerTaskService.getInnerMarketInfo();
+    }
+
+    @Test
+    public void testGetInnerStockMarketInfo() {
+        stockTimerTaskService.getInnerStockMarketInfo();
+    }
+
+    @Test
+    public void testGetBlockInfo() {
+        stockTimerTaskService.getBlockInfo();
     }
 }

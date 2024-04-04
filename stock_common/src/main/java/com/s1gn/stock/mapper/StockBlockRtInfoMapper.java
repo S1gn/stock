@@ -50,4 +50,13 @@ public interface StockBlockRtInfoMapper {
                                   @Param("flag") int flag);
 
     List<Map> getIncreaseRangeInfoByDate(@Param("curDate")Date curDate);
+
+    /**
+     * @Auther s1gn
+     * @Description 批量插入板块实时信息
+     * @Date 2024/4/4 20:59
+     * @param entities
+     * @return {@link int }
+     **/
+    int insertBatch(@Param("infoList") List<StockBlockRtInfo> entities);
 }

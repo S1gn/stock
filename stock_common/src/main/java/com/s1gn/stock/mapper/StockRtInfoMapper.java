@@ -3,6 +3,7 @@ package com.s1gn.stock.mapper;
 import com.s1gn.stock.pojo.domain.Stock4DayDomain;
 import com.s1gn.stock.pojo.domain.Stock4MinuteDomain;
 import com.s1gn.stock.pojo.entity.StockRtInfo;
+import com.s1gn.stock.pojo.vo.StockInfoConfig;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
@@ -67,4 +68,12 @@ public interface StockRtInfoMapper {
      * @return {@link List< Stock4DayDomain> }
      **/
     List<Stock4DayDomain> getStock4DayInfoByTimeList(@Param("timeList") List<Date> everyDayLastTime, @Param("stockCode") String stockCode);
+    /**
+     * @Auther s1gn
+     * @Description 批量插入股票信息
+     * @Date 2024/4/4 16:28
+     * @param list
+     * @return {@link int }
+     **/
+    int insertBatch(@Param("infoList") List<StockInfoConfig> list);
 }

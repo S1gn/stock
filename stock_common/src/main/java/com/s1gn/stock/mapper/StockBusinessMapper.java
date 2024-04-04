@@ -2,6 +2,8 @@ package com.s1gn.stock.mapper;
 
 import com.s1gn.stock.pojo.entity.StockBusiness;
 
+import java.util.List;
+
 /**
 * @author zzy
 * @description 针对表【stock_business(主营业务表)】的数据库操作Mapper
@@ -21,5 +23,12 @@ public interface StockBusinessMapper {
     int updateByPrimaryKeySelective(StockBusiness record);
 
     int updateByPrimaryKey(StockBusiness record);
+    /**
+     * @Auther s1gn
+     * @Description 获取所有股票代码
+     * @Date 2024/4/4 15:45
+     * @return {@link List<String> }
+     **/
+    List<String> getAllStockCodes();
 
 }
