@@ -1,5 +1,7 @@
 package com.s1gn.stock.config;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @Version 1.0
  */
 @Configuration
-public class RedisCacheConfig {
+public class CacheConfig {
     /**
      * @Auther s1gn
      * @Description 自定义模板对象，保证bean的名称是redisTemplate，保证注入时只注入自定义的这个
@@ -40,4 +42,22 @@ public class RedisCacheConfig {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
+    /**
+     * @Auther s1gn
+     * @Description 使用caffeine作为缓存
+     * @Date 2024/4/5 20:38
+     * @return {@link Cache< String, Object> }
+     **/
+    @Bean
+    public Cache<String, Object>caffeineCache(){
+        Cache<String, Object> cache = Caffeine.newBuilder()
+//                .expireAfterWrite(1, TimeUnit.MINUTES) // 写入后1分钟过期
+//                .expireAfterAccess(1) // 访问后1分钟过期
+                .maximumSize(200) // 最大容量
+                .initialCapacity(100) // 初始容量
+                .recordStats() // 开启统计功能
+                .build();
+        return cache;
+    }
+
 }

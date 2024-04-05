@@ -2,6 +2,7 @@ package com.s1gn.stock.service.impl;
 
 import com.alibaba.excel.EasyExcel;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.s1gn.stock.mapper.StockBlockRtInfoMapper;
@@ -49,6 +50,8 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private StockRtInfoMapper stockRtInfoMapper;
 
+    @Autowired
+    private Cache<String, Object> caffeineCache;
     /**
      * @Auther s1gn
      * @Description 获取国内大盘最新数据
@@ -59,16 +62,22 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public R<List<InnerMarketDomain>> getInnerMarketInfo() {
-        // 获取最新交易时间，精确到分钟，秒和毫秒为0
-        DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
-        Date curDate = curDateTime.toDate();
-        curDate = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-        // 获取大盘编码集合
-        List<String> innerCode = stockInfoConfig.getInner();
-        // 调用mapper查询大盘数据
-        List<InnerMarketDomain> data = stockMarketIndexInfoMapper.getMarketInfo(curDate, innerCode);
-        // 封装返回结果
-        return R.ok(data);
+        // 从缓存中获取数据，如果不存在则查询数据库
+        // 开盘周期内，本地缓存默认有效期为1分钟
+        R<List<InnerMarketDomain>> result = (R<List<InnerMarketDomain>>)caffeineCache.get("innerMarketKey" ,key->{
+            // 获取最新交易时间，精确到分钟，秒和毫秒为0
+            DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+            Date curDate = curDateTime.toDate();
+            curDate = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+            // 获取大盘编码集合
+            List<String> innerCode = stockInfoConfig.getInner();
+            // 调用mapper查询大盘数据
+            List<InnerMarketDomain> data = stockMarketIndexInfoMapper.getMarketInfo(curDate, innerCode);
+            // 封装返回结果
+            return R.ok(data);
+        });
+
+        return result;
     }
 
     /**
