@@ -11,3 +11,10 @@ stock:
     - b_FSSTI
   marketUrl: https://hq.sinajs.cn/list=
   blockUrl: http://vip.stock.finance.sina.com.cn/q/view/newSinaHy.php
+
+task:
+  pool:
+    corePoolSize: 5 # 核心线程数
+    maxPoolSize: 10 # 最大线程数
+    keepAliveSeconds: 300 # 线程活动时间,单位秒
+    queueCapacity: 100 # 队列长度
