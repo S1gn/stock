@@ -36,6 +36,10 @@
         from sys_permission
         where  id = #{id,jdbcType=BIGINT} 
     </select>
+    <select id="getAll" resultType="com.s1gn.stock.pojo.domain.PermissionDomain">
+        select title, id, icon, url as path, name, type, pid
+        from sys_permission;
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_permission

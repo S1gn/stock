@@ -27,6 +27,21 @@
         where  id = #{id,jdbcType=BIGINT} 
     </select>
 
+    <select id="getExternalIndexInfo" resultType="map">
+        SELECT
+            tp.market_name as name,
+            tp.cur_point as curPoint,
+            tp.updown as upDown,
+            tp.rose as rose,
+            date_format(tp.cur_time,'%Y%m%d')as curTime
+        FROM
+            stock_outer_market_index_info as tp
+        WHERE
+            tp.cur_time BETWEEN #{startDate} and #{endDate}
+        ORDER BY curTime DESC, curPoint DESC
+            LIMIT 4;
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_outer_market_index_info
         where  id = #{id,jdbcType=BIGINT} 
@@ -60,6 +75,19 @@
                 <if test="rose != null">#{rose,jdbcType=DECIMAL},</if>
                 <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
+    </insert>
+    <insert id="insertBatch">
+        insert into stock_outer_market_index_info
+        ( id,market_code,market_name
+        ,cur_point,updown,rose
+        ,cur_time)
+        values
+        <foreach collection="entities" item="info" separator=",">
+            (#{info.id,jdbcType=BIGINT},#{info.marketCode,jdbcType=CHAR},#{info.marketName,jdbcType=VARCHAR}
+            ,#{info.curPoint,jdbcType=DECIMAL},#{info.updown,jdbcType=DECIMAL},#{info.rose,jdbcType=DECIMAL}
+            ,#{info.curTime,jdbcType=TIMESTAMP})
+        </foreach>
+
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.s1gn.stock.pojo.entity.StockOuterMarketIndexInfo">
         update stock_outer_market_index_info

@@ -1,8 +1,10 @@
 package com.s1gn.stock.mapper;
 
 import com.s1gn.stock.pojo.entity.StockBusiness;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author zzy
@@ -30,5 +32,20 @@ public interface StockBusinessMapper {
      * @return {@link List<String> }
      **/
     List<String> getAllStockCodes();
-
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码获取相似股票
+     * @Date 2024/4/12 15:38
+     * @param searchStr
+     * @return {@link List< Map< String, String>> }
+     **/
+    List<Map<String, String>> getSimilarStockByCode(@Param("searchStr") String searchStr);
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码获取股票描述
+     * @Date 2024/4/12 15:44
+     * @param stockCode
+     * @return {@link List< Map< String, String>> }
+     **/
+    List<Map<String, String>> getStockDescribeByCode(@Param("stockCode") String stockCode);
 }

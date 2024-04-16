@@ -27,6 +27,10 @@
         delete from sys_user_role
         where  id = #{id,jdbcType=BIGINT} 
     </delete>
+    <delete id="deleteUserRole">
+        delete from sys_user_role
+        where user_id = #{userId}
+    </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.s1gn.stock.pojo.entity.SysUserRole" useGeneratedKeys="true">
         insert into sys_user_role
         ( id,user_id,role_id
@@ -48,6 +52,14 @@
                 <if test="roleId != null">#{roleId,jdbcType=BIGINT},</if>
                 <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
+    </insert>
+    <insert id="addUserRoleList">
+        insert into sys_user_role
+        (id,user_id,role_id,create_time)
+        values
+        <foreach collection="userRoles" item="item" separator="," >
+            (#{item.id},#{item.userId},#{item.roleId},#{item.createTime})
+        </foreach>
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.s1gn.stock.pojo.entity.SysUserRole">
         update sys_user_role

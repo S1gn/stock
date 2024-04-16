@@ -27,6 +27,8 @@ mybatis:
   configuration:
     map-underscore-to-camel-case: true # 开启驼峰映射
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印sql语句
+    cache-enabled: false # 关闭二级缓存，使用caffeine缓存
+    local-cache-scope: statement # 本地缓存作用域，statement为语句作用域
 # pagehelper配置
 pagehelper:
   helper-dialect: mysql #指定分页数据库类型（方言）

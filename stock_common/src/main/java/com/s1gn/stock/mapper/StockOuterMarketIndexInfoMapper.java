@@ -1,6 +1,11 @@
 package com.s1gn.stock.mapper;
 
 import com.s1gn.stock.pojo.entity.StockOuterMarketIndexInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
 * @author zzy
@@ -22,4 +27,21 @@ public interface StockOuterMarketIndexInfoMapper {
 
     int updateByPrimaryKey(StockOuterMarketIndexInfo record);
 
+    /**
+     * @Auther s1gn
+     * @Description 根据时间范围获取外盘指数信息，开始时间和结束时间内，按照时间、点数降序排列，返回前4条
+     * @Date 2024/4/11 15:01
+     * @param startDate
+     * @param endDate
+     * @return {@link List< Map> }
+     **/
+    List<Map<String, String>> getExternalIndexInfo(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
+    /**
+     * @Auther s1gn
+     * @Description 批量插入外盘指数信息
+     * @Date 2024/4/15 22:20
+     * @param entities
+     * @return {@link int }
+     **/
+    int insertBatch(@Param("entities") List<StockOuterMarketIndexInfo> entities);
 }

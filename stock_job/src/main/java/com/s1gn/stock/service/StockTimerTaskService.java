@@ -23,4 +23,12 @@ public interface StockTimerTaskService {
     public void getInnerStockMarketInfo();
 
     public void getBlockInfo();
+
+    /**
+     * @Auther s1gn
+     * @Description 采集国外大盘数据
+     * @Date 2024/4/15 22:04
+     * @return void
+     **/
+    public void getOuterMarketInfo();
 }

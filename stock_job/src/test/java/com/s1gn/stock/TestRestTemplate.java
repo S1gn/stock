@@ -33,4 +33,9 @@ public class TestRestTemplate {
     public void testGetBlockInfo() {
         stockTimerTaskService.getBlockInfo();
     }
+
+    @Test
+    public void testGetOuterMarketInfo() {
+        stockTimerTaskService.getOuterMarketInfo();
+    }
 }

@@ -2,12 +2,15 @@ package com.s1gn.stock.mapper;
 
 import com.s1gn.stock.pojo.domain.Stock4DayDomain;
 import com.s1gn.stock.pojo.domain.Stock4MinuteDomain;
+import com.s1gn.stock.pojo.domain.Stock4SecondDomain;
+import com.s1gn.stock.pojo.domain.Stock4WeekDomain;
 import com.s1gn.stock.pojo.entity.StockRtInfo;
 import com.s1gn.stock.pojo.vo.StockInfoConfig;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
 * @author zzy
@@ -76,4 +79,34 @@ public interface StockRtInfoMapper {
      * @return {@link int }
      **/
     int insertBatch(@Param("infoList") List<StockInfoConfig> list);
+    /**
+     * @Auther s1gn
+     * @Description //获取指定时间范围内的周K线数据
+     * @Date 2024/4/12 16:36
+     * @param startDate
+     * @param endDate
+     * @param stockCode
+     * @return {@link List< Stock4WeekDomain> }
+     **/
+    List<Stock4WeekDomain> getStock4WeekInfo(@Param("startDate") Date startDate, @Param("endDate") Date endDate, @Param("stockCode") String stockCode);
+
+    /**
+     * @Auther s1gn
+     * @Description 获取指定时间范围内的最新分时数据
+     * @Date 2024/4/12 16:47
+     * @param endDate
+     * @param stockCode
+     * @return {@link Stock4SecondDomain }
+     **/
+    Stock4SecondDomain getStock4SecondDetailInfo(@Param("endDate") Date endDate, @Param("stockCode") String stockCode);
+
+    /**
+     * @Auther s1gn
+     * @Description 获取指定时间范围内的最新分时数据，取前10
+     * @Date 2024/4/12 16:57
+     * @param endDate
+     * @param stockCode
+     * @return {@link List< Map< String, String>> }
+     **/
+    List<Map<String, String>> getStock4SecondInfo(@Param("endDate") Date endDate, @Param("stockCode") String stockCode);
 }

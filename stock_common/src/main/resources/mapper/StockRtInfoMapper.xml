@@ -96,6 +96,66 @@
 
 
     </select>
+    <select id="getStock4WeekInfo" resultType="com.s1gn.stock.pojo.domain.Stock4WeekDomain">
+        SELECT
+            tmp.stock_code AS stockcode,
+            tmp.maxPrice,
+            tmp.minPrice,
+            tmp.avgPrice,
+            s1.open_price AS openPrice,
+            s2.cur_price AS closePrice,
+            tmp.mxTime,
+            weeks
+        FROM(
+                SELECT
+                    stock_code AS stock_code,
+                    MAX(cur_time) AS mxTime,
+                    MIN(cur_time) AS miTime,
+                    MAX(cur_price) AS maxPrice,
+                    MIN(cur_price) AS minPrice,
+                    AVG(cur_price) AS avgPrice,
+                    DATE_FORMAT(cur_time, '%Y%u') AS weeks
+                FROM
+                    stock_rt_info
+                WHERE
+                    stock_code = #{stockCode}
+                  AND cur_time BETWEEN #{startDate}
+                    AND #{endDate}
+                GROUP BY
+                    weeks
+            ) as tmp
+                LEFT JOIN stock_rt_info AS s1 ON s1.stock_code = tmp.stock_code
+            AND s1.cur_time = tmp.miTime
+                LEFT JOIN stock_rt_info As s2 on s2.stock_code = tmp.stock_code
+            And s2.cur_time = tmp.mxTime
+        ORDER BY tmp.mxTime ASC
+    </select>
+    <select id="getStock4SecondDetailInfo" resultType="com.s1gn.stock.pojo.domain.Stock4SecondDomain">
+        select
+            sri.cur_time as curDate,
+            sri.trade_amount as tradeAmt,
+            sri.min_price as lowPrice,
+            sri.max_price as highPrice,
+            sri.open_price as openPrice,
+            sri.trade_volume as tradeVol,
+            sri.cur_price as tradePrice
+        from stock_rt_info as sri
+        where sri.stock_code=#{stockCode}
+          and sri.cur_time &lt;= #{endDate}
+        Limit 1
+    </select>
+    <select id="getStock4SecondInfo" resultType="java.util.Map">
+        select
+            sri.cur_time as date,
+            sri.trade_amount as tradeAmt,
+            sri.trade_volume as tradeVol,
+            sri.cur_price as tradePrice
+        from stock_rt_info as sri
+        where sri.stock_code=#{stockCode}
+          and sri.cur_time &lt;= #{endDate}
+        order by sri.cur_time desc
+            Limit 10
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_rt_info

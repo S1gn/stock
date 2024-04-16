@@ -1,6 +1,9 @@
 package com.s1gn.stock.mapper;
 
+import com.s1gn.stock.pojo.domain.PermissionDomain;
 import com.s1gn.stock.pojo.entity.SysPermission;
+
+import java.util.List;
 
 /**
 * @author zzy
@@ -21,5 +24,11 @@ public interface SysPermissionMapper {
     int updateByPrimaryKeySelective(SysPermission record);
 
     int updateByPrimaryKey(SysPermission record);
-
+    /**
+     * @Auther s1gn
+     * @Description 获取所有权限
+     * @Date 2024/4/16 22:32
+     * @return {@link List< PermissionDomain> }
+     **/
+    List<PermissionDomain> getAll();
 }

@@ -42,10 +42,61 @@
         from sys_user
         where  username = #{userName,jdbcType=VARCHAR}
     </select>
+    <select id="getRoleIdList" resultType="java.lang.String">
+        SELECT
+            sur.role_id
+        FROM
+            sys_user as su
+        LEFT JOIN sys_user_role as sur on su.id = sur.user_id
+        WHERE su.id = #{id}
+    </select>
+    <select id="getPermissionList" resultType="com.s1gn.stock.pojo.domain.PermissionDomain">
+        SELECT
+            DISTINCT (sp.title),
+                     sp.id,
+                     sp.icon,
+                     sp.url AS path,
+                     sp.NAME,
+                     sp.type,
+                     sp.pid
+        FROM
+            sys_role_permission AS srp
+                LEFT JOIN sys_permission AS sp ON srp.permission_id = sp.id
+        WHERE
+            srp.role_id in
+        <foreach collection="roleidList" item="roleid" separator="," open="(" close=")">
+            #{roleid}
+        </foreach>
+    </select>
+    <select id="multiConditionQuery" resultType="com.s1gn.stock.pojo.entity.SysUser">
+        select * from sys_user
+        <where>
+            <if test="username != null and username != ''">
+                and username = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null and nickName != ''">
+                and nick_name = #{nickName,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null and endTime != null">
+                and create_time between #{startTime,jdbcType=TIMESTAMP} and #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from sys_user
         where  id = #{id,jdbcType=BIGINT} 
+    </delete>
+    <delete id="deleteUserRole">
+        delete from sys_user_role
+        where user_id = #{userId}
+    </delete>
+    <delete id="deleteBatch">
+        delete from sys_user
+        where id in
+        <foreach collection="userIds" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
     </delete>
     <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.s1gn.stock.pojo.entity.SysUser" useGeneratedKeys="true">
         insert into sys_user
@@ -99,6 +150,8 @@
                 <if test="updateTime != null">#{updateTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+
+
     <update id="updateByPrimaryKeySelective" parameterType="com.s1gn.stock.pojo.entity.SysUser">
         update sys_user
         <set>

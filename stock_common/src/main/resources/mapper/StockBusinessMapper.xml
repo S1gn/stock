@@ -27,6 +27,27 @@
     <select id="getAllStockCodes" resultType="java.lang.String">
         select stock_code from stock_business
     </select>
+    <select id="getSimilarStockByCode" resultType="map">
+        SELECT
+            tmp.stock_code as code,
+            tmp.stock_name as name
+        FROM
+            `stock_business` as tmp
+        WHERE
+            tmp.stock_code LIKE CONCAT(#{searchStr},'%')
+        LIMIT 10;
+    </select>
+    <select id="getStockDescribeByCode" resultType="map">
+        SELECT
+            tmp.stock_code as code,
+            tmp.block_name as trade,
+            tmp.business as business,
+            tmp.stock_name as name
+        FROM
+            `stock_business` as tmp
+        WHERE
+            tmp.stock_code = #{stockCode}
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         delete from stock_business

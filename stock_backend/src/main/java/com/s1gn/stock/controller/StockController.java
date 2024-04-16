@@ -42,7 +42,7 @@ public class StockController {
         return stockService.getInnerMarketInfo();
     }
 
-    @GetMapping("/index/sector/all")
+    @GetMapping("/sector/all")
     public R<List<StockBlockDomain>> sectorAll(){
         return stockService.sectorAllLimit();
     }
@@ -139,4 +139,76 @@ public class StockController {
     public R<List<Stock4DayDomain>> getStockScreenDKline(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenDKline(stockCode);
     }
+
+    /**
+     * @Auther s1gn
+     * @Description 外盘指数行情数据查询，根据时间和大盘点数降序排序取前4
+     * @Date 2024/4/11 14:39
+     * @return {@link R< List< Map>> }
+     **/
+    @GetMapping("/external/index")
+    public R<List<Map<String, String>>> getExternalIndex(){
+        return stockService.getExternalIndex();
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代母模糊查询股票集合
+     * @Date 2024/4/12 15:25
+     * @param searchStr
+     * @return {@link R< List< Map< String, String>>> }
+     **/
+    @GetMapping("/stock/search")
+    public R<List<Map<String, String>>> getSimilarStock(@RequestParam(value = "searchStr", required = true)String searchStr){
+        return stockService.getSimilarStock(searchStr);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 根据股票代码获取股票描述信息
+     * @Date 2024/4/12 15:43
+     * @param stockCode
+     * @return {@link R< List< Map< String, String>>> }
+     **/
+    @GetMapping("/stock/describe")
+    public R<List<Map<String, String>>> getStockDescribe(@RequestParam(value = "code", required = true)String stockCode){
+        return stockService.getStockDescribe(stockCode);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 获取股票周K线图数据
+     * @Date 2024/4/12 15:55
+     * @param stockCode
+     * @return {@link R< List< Stock4WeekDomain>> }
+     **/
+    @GetMapping("/stock/screen/weekkline")
+    public R<List<Stock4WeekDomain>> getStockScreenWeekKline(@RequestParam(value = "code", required = true) String stockCode){
+        return stockService.getStockScreenWeekKline(stockCode);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 获取股票秒级数据
+     * @Date 2024/4/12 16:45
+     * @param stockCode
+     * @return {@link R< Stock4SecondDomain> }
+     **/
+    @GetMapping("/stock/screen/second/detail")
+    public R<Stock4SecondDomain> getStockScreenSecondDetail(@RequestParam(value = "code", required = true) String stockCode){
+        return stockService.getStockScreenSecondDetail(stockCode);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 查询交易流水数据
+     * @Date 2024/4/12 16:55
+     * @param stockCode
+     * @return {@link null }
+     **/
+    @GetMapping("/stock/screen/second")
+    public R<List<Map<String, String>>> getStockScreenSecond(@RequestParam(value = "code", required = true) String stockCode){
+        return stockService.getStockScreenSecond(stockCode);
+    }
+
 }

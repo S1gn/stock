@@ -2,17 +2,27 @@ package com.s1gn.stock.pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 用户表
  * @TableName sys_user
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class SysUser implements Serializable {
     /**
      * 用户id
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**

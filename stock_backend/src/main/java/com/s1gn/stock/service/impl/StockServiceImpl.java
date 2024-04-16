@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.s1gn.stock.mapper.StockBlockRtInfoMapper;
-import com.s1gn.stock.mapper.StockMarketIndexInfoMapper;
-import com.s1gn.stock.mapper.StockRtInfoMapper;
+import com.s1gn.stock.mapper.*;
 import com.s1gn.stock.pojo.domain.*;
 import com.s1gn.stock.pojo.vo.StockInfoConfig;
 import com.s1gn.stock.service.StockService;
@@ -16,7 +14,6 @@ import com.s1gn.stock.vo.resp.PageResult;
 import com.s1gn.stock.vo.resp.R;
 import com.s1gn.stock.vo.resp.ResponseCode;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +49,12 @@ public class StockServiceImpl implements StockService {
 
     @Autowired
     private Cache<String, Object> caffeineCache;
+
+    @Autowired
+    private StockBusinessMapper stockBusinessMapper;
+
+    @Autowired
+    private StockOuterMarketIndexInfoMapper stockOuterMarketIndexInfoMapper;
     /**
      * @Auther s1gn
      * @Description 获取国内大盘最新数据
@@ -277,6 +280,63 @@ public class StockServiceImpl implements StockService {
         // 查询
         List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfoByTimeList(everyDayLastTime, stockCode);
 //        List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfo(startDate, endDate, stockCode);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Map<String, String>>> getExternalIndex() {
+        // 获取最新交易时间，精确到分钟，秒和毫秒为0
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2022-05-18 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        DateTime startDateTime = endDateTime.minusDays(1);
+        Date startDate=DateTime.parse("2022-05-17 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<Map<String, String>> data = stockOuterMarketIndexInfoMapper.getExternalIndexInfo(startDate, endDate);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Map<String, String>>> getSimilarStock(String searchStr) {
+        List<Map<String, String>> data = stockBusinessMapper.getSimilarStockByCode(searchStr);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Map<String, String>>> getStockDescribe(String stockCode) {
+        List<Map<String, String>> data = stockBusinessMapper.getStockDescribeByCode(stockCode);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Stock4WeekDomain>> getStockScreenWeekKline(String stockCode) {
+        // 获取起始时间和结束时间
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        DateTime startDateTime = endDateTime.minusMonths(6);
+        Date startDate=DateTime.parse("2021-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 查询
+        List<Stock4WeekDomain> data = stockRtInfoMapper.getStock4WeekInfo(startDate, endDate, stockCode);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<Stock4SecondDomain> getStockScreenSecondDetail(String stockCode) {
+        // 获取最新交易时间，精确到分钟，秒和毫秒为0
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Stock4SecondDomain data = stockRtInfoMapper.getStock4SecondDetailInfo(endDate, stockCode);
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Map<String, String>>> getStockScreenSecond(String stockCode) {
+        // 获取最新交易时间，精确到分钟，秒和毫秒为0
+        DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = endDateTime.toDate();
+        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        List<Map<String, String>> data = stockRtInfoMapper.getStock4SecondInfo(endDate, stockCode);
         return R.ok(data);
     }
 }

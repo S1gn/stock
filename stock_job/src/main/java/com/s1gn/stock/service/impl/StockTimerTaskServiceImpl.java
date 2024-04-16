@@ -3,17 +3,16 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.s1gn.stock.constant.ParseType;
-import com.s1gn.stock.mapper.StockBlockRtInfoMapper;
-import com.s1gn.stock.mapper.StockBusinessMapper;
-import com.s1gn.stock.mapper.StockMarketIndexInfoMapper;
-import com.s1gn.stock.mapper.StockRtInfoMapper;
+import com.s1gn.stock.mapper.*;
 import com.s1gn.stock.pojo.entity.StockBlockRtInfo;
 import com.s1gn.stock.pojo.entity.StockMarketIndexInfo;
+import com.s1gn.stock.pojo.entity.StockOuterMarketIndexInfo;
 import com.s1gn.stock.pojo.vo.StockInfoConfig;
 import com.s1gn.stock.service.StockTimerTaskService;
 import com.s1gn.stock.utils.DateTimeUtil;
 import com.s1gn.stock.utils.IdWorker;
 import com.s1gn.stock.utils.ParserStockInfoUtil;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -67,6 +66,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
     private ObjectMapper objectMapper;
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private StockOuterMarketIndexInfoMapper stockOuterMarketIndexInfoMapper;
     @Override
     public void getInnerMarketInfo() {
         // 采集原始数据
@@ -267,6 +268,66 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
             }
 
         }
+    }
+
+    @Override
+    public void getOuterMarketInfo() {
+        // 构造url
+        String url = stockInfoConfig.getMarketUrl() + String.join(",", stockInfoConfig.getOuter());
+        // 填充headers
+        ResponseEntity<String> responseEntity = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+        if (responseEntity.getStatusCodeValue()!=200){
+            log.error("{}，采集数据失败，状态码{}", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), responseEntity.getStatusCodeValue());
+            return;
+        }
+        // 解析数据
+        String jsData = responseEntity.getBody();
+        log.info("{}采集到数据{}", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), jsData);
+        String reg = "var hq_str_(.+)=\"(.+)\";";
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(jsData);
+        List< StockOuterMarketIndexInfo> entities = new ArrayList<>();
+        while(matcher.find())
+        {
+            String stockCode = matcher.group(1);
+            String stockInfo = matcher.group(2);
+            String[] stockInfoArr = stockInfo.split(",");
+            // 0:股票名称
+            String marketName = stockInfoArr[0];
+            // 1:当前点数
+            BigDecimal curPoint = new BigDecimal(stockInfoArr[1]);
+            // 2:涨跌值
+            BigDecimal updown = new BigDecimal(stockInfoArr[2]);
+            // 3:涨幅
+            BigDecimal rose = new BigDecimal(stockInfoArr[3]);
+            // 当前时间
+            Date curTime = DateTimeUtil.getCloseDate(DateTime.now()).toDate();
+            // 封装实体对象
+            StockOuterMarketIndexInfo entity = StockOuterMarketIndexInfo.builder()
+                    .id(idWorker.nextId())
+                    .marketCode(stockCode)
+                    .marketName(marketName)
+                    .curPoint(curPoint)
+                    .updown(updown)
+                    .rose(rose)
+                    .curTime(curTime)
+                    .build();
+            entities.add(entity);
+        }
+        log.info("解析到{}条数据", entities.size());
+        // 持久化数据
+        int count = stockOuterMarketIndexInfoMapper.insertBatch(entities);
+        if(count>0)
+        {
+            // 数据采集完成后，通知backend刷新缓存
+            // 发送日期，backend收到日期并比对，判断是否需要刷新缓存
+            rabbitTemplate.convertAndSend("stockExchange", "outer.market", new Date());
+
+            log.info("当前时间{}成功插入{}条数据", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"), count);
+        }else{
+            log.error("当前时间{}插入数据失败", DateTime.now().toString("yyyy-MM-dd HH:mm:ss"));
+        }
+
     }
 
     @PostConstruct

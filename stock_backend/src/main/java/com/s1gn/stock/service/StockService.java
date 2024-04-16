@@ -29,4 +29,17 @@ public interface StockService {
     R<List<Stock4MinuteDomain>> getStockScreenTimeSharing(String stockCode);
 
     R<List<Stock4DayDomain>> getStockScreenDKline(String stockCode);
+
+    R<List<Map<String, String>>> getExternalIndex();
+
+    R<List<Map<String, String>>> getSimilarStock(String searchStr);
+
+    R<List<Map<String, String>>> getStockDescribe(String stockCode);
+
+    R<List<Stock4WeekDomain>> getStockScreenWeekKline(String stockCode);
+
+    R<Stock4SecondDomain> getStockScreenSecondDetail(String stockCode);
+
+
+    R<List<Map<String, String>>> getStockScreenSecond(String stockCode);
 }

@@ -49,6 +49,15 @@
                 <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+    <insert id="insertBatch">
+        insert into sys_role_permission
+        ( id,role_id,permission_id
+        ,create_time)
+        values
+        <foreach collection="rolePermissions" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=BIGINT},#{item.roleId,jdbcType=BIGINT},#{item.permissionId,jdbcType=BIGINT},#{item.createTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.s1gn.stock.pojo.entity.SysRolePermission">
         update sys_role_permission
         <set>
