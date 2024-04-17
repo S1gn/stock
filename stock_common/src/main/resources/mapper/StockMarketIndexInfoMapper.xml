@@ -62,7 +62,7 @@
         </foreach>
         and smi.cur_time between #{openDate} and #{endDate}
         group by smi.cur_time
-        order by time asc;
+        order by time asc
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

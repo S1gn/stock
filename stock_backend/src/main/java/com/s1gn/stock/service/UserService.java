@@ -1,7 +1,9 @@
 package com.s1gn.stock.service;
 
+import com.s1gn.stock.pojo.entity.SysPermission;
 import com.s1gn.stock.pojo.entity.SysUser;
 import com.s1gn.stock.vo.req.LoginReqVo;
+import com.s1gn.stock.vo.req.PermissionAddVo;
 import com.s1gn.stock.vo.req.UpdateUserReqVo;
 import com.s1gn.stock.vo.req.UserReqVo;
 import com.s1gn.stock.vo.resp.LoginRespVo;
@@ -122,4 +124,80 @@ public interface UserService {
      * @return {@link R }
      **/
     R addRolePermission(Map<String, Object> rolePermission);
+    /**
+     * @Auther s1gn
+     * @Description 获取角色关联的所有权限
+     * @Date 2024/4/17 14:01
+     * @param roleId
+     * @return {@link R< List< String>> }
+     **/
+    R<List<String>> getRolePermission(String roleId);
+    /**
+     * @Auther s1gn
+     * @Description 更新角色权限
+     * @Date 2024/4/17 14:09
+     * @param rolePermission
+     * @return {@link R }
+     **/
+    R updateRolePermission(Map<String, Object> rolePermission);
+    /**
+     * @Auther s1gn
+     * @Description 删除角色权限
+     * @Date 2024/4/17 14:19
+     * @param roleId
+     * @return {@link R }
+     **/
+    R deleteRolePermission(String roleId);
+
+    /**
+     * @Auther s1gn
+     * @Description 更新角色状态信息
+     * @Date 2024/4/17 14:22
+     * @param roleId
+     * @param status
+     * @return {@link R }
+     **/
+    R updateRoleStatus(String roleId, Integer status);
+    /**
+     * @Auther s1gn
+     * @Description 获取所有权限
+     * @Date 2024/4/17 14:26
+     * @return {@link R< List< SysPermission>> }
+     **/
+    R<List<SysPermission>> getAllPermissions();
+
+    /**
+     * @Auther s1gn
+     * @Description 获取权限树
+     * @Date 2024/4/17 14:34
+     * @return {@link R< List< Map>> }
+     **/
+    R<List<Map>> getPermissionTree();
+
+    /**
+     * @Auther s1gn
+     * @Description 添加权限
+     * @Date 2024/4/17 14:50
+     * @param permissionAddVo
+     * @return {@link R }
+     **/
+    R addPermission(PermissionAddVo permissionAddVo);
+
+    /**
+     * @Auther s1gn
+     * @Description 更新权限
+     * @Date 2024/4/17 15:00
+     * @param permissionAddVo
+     * @return {@link R }
+     **/
+    R updatePermission(PermissionAddVo permissionAddVo);
+
+    /**
+     * @Auther s1gn
+     * @Description 删除权限
+     * @Date 2024/4/17 15:02
+     * @param permissionId
+     * @return {@link R }
+     **/
+    R deletePermission(String permissionId);
 }

@@ -5,12 +5,14 @@ import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.date.DateTime;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.io.BaseEncoding;
 import com.s1gn.stock.mapper.*;
 import com.s1gn.stock.pojo.entity.*;
 import com.s1gn.stock.service.UserService;
 import com.s1gn.stock.utils.IdWorker;
 import com.s1gn.stock.pojo.domain.PermissionDomain;
 import com.s1gn.stock.vo.req.LoginReqVo;
+import com.s1gn.stock.vo.req.PermissionAddVo;
 import com.s1gn.stock.vo.req.UpdateUserReqVo;
 import com.s1gn.stock.vo.req.UserReqVo;
 import com.s1gn.stock.vo.resp.*;
@@ -115,8 +117,24 @@ public class UserServiceImpl implements UserService {
                 permissions.add(permissionDomain.getIcon());
             }
         }
-        //6.根据权限集合组装菜单信息
+        //6.根据权限集合组装菜单信息，删除权限按钮即code不为空的，目测type = 3
         List<MenuRespVo> menuList = MenuRespVo.getMenuList(permissionList);
+        for(MenuRespVo menuRespVo: menuList)
+        {
+            if(menuRespVo.getChildren() != null)
+            {
+                for(MenuRespVo menuRespVo1: menuRespVo.getChildren())
+                {
+                    if(menuRespVo1.getChildren() != null)
+                    {
+                        menuRespVo1.setChildren(null);
+                    }
+                }
+            }
+        }
+        //7.加密生成token
+        String info = user.getId() + ":" + user.getUsername();
+        String encodeInfo = BaseEncoding.base64().encode(info.getBytes());
         //7.生成responseVo
         LoginRespVo respVo = new LoginRespVo();
         BeanUtils.copyProperties(user, respVo); //必须保证属性，名称相同
@@ -126,6 +144,7 @@ public class UserServiceImpl implements UserService {
         respVo.setStatus(user.getStatus());
         respVo.setPermissions(permissions);
         respVo.setMenus(menuList);
+        respVo.setAccessToken(encodeInfo);
         return R.ok(respVo);
 
     }
@@ -158,10 +177,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R<PageResult> getUserByPage(UserReqVo userReqVo) {
+        PageHelper.startPage(userReqVo.getPageNum(), userReqVo.getPageSize());
         List<SysUser> userList= sysUserMapper.multiConditionQuery(
                 userReqVo.getUsername(), userReqVo.getNickName(),
                 userReqVo.getStartTime(), userReqVo.getEndTime());
-        PageHelper.startPage(userReqVo.getPageNum(), userReqVo.getPageSize());
+
         PageInfo<SysUser> pageInfo = new PageInfo<>(userList);
         // 根据页数和每页条数求得实际返回的数据
         PageResult<SysUser> pageResult = new PageResult<>(pageInfo);
@@ -307,5 +327,164 @@ public class UserServiceImpl implements UserService {
         sysRolePermissionMapper.insertBatch(rolePermissions);
         return R.ok();
     }
+
+    @Override
+    public R<List<String>> getRolePermission(String roleId) {
+        // 查询角色关联的所有权限
+        List<String> permissionList = sysRolePermissionMapper.getPermissionsByRoleId(roleId);
+        return R.ok(permissionList);
+    }
+
+    @Override
+    public R updateRolePermission(Map<String, Object> rolePermission) {
+        // 根据角色id获取数据库对象
+        SysRole sysRole = sysRoleMapper.selectByPrimaryKey(Long.parseLong((String) rolePermission.get("id")));
+        if(sysRole == null){
+            return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
+        }
+        // 更新角色信息
+        sysRole.setName((String) rolePermission.get("name"));
+        sysRole.setDescription((String) rolePermission.get("description"));
+        sysRole.setUpdateTime(DateTime.now());
+        sysRoleMapper.updateByPrimaryKey(sysRole);
+        // 删除角色所有权限
+        sysRolePermissionMapper.deleteByRoleId(sysRole.getId().toString());
+        // 添加角色权限
+        List< SysRolePermission> rolePermissions = new ArrayList<>();
+        List<String> permissionIds = (List<String>) rolePermission.get("permissionsIds");
+        for(String permissionId : permissionIds){
+            SysRolePermission rolePermission1 = new SysRolePermission();
+            rolePermission1.setId(idWorker.nextId());
+            rolePermission1.setRoleId(sysRole.getId());
+            rolePermission1.setPermissionId(Long.parseLong(permissionId));
+            rolePermission1.setCreateTime(DateTime.now());
+            rolePermissions.add(rolePermission1);
+        }
+        if(rolePermissions.size() == 0){
+            return R.ok();
+        }
+        sysRolePermissionMapper.insertBatch(rolePermissions);
+        return R.ok();
+    }
+
+    @Override
+    public R deleteRolePermission(String roleId) {
+        // 先删除角色
+        sysRoleMapper.deleteByPrimaryKey(Long.parseLong(roleId));
+        // 再批量删除权限
+        sysRolePermissionMapper.deleteByRoleId(roleId);
+        return R.ok();
+    }
+
+    @Override
+    public R updateRoleStatus(String roleId, Integer status) {
+        // 根据角色id获取数据库对象
+        SysRole sysRole = sysRoleMapper.selectByPrimaryKey(Long.parseLong(roleId));
+        if(sysRole == null){
+            return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
+        }
+        // 更新角色状态
+        sysRole.setStatus(status);
+        sysRole.setUpdateTime(DateTime.now());
+        sysRoleMapper.updateByPrimaryKey(sysRole);
+        return R.ok();
+    }
+
+    @Override
+    public R<List<SysPermission>> getAllPermissions() {
+        List<SysPermission> data = sysPermissionMapper.getAllPermissions();
+        return R.ok(data);
+    }
+
+    @Override
+    public R<List<Map>> getPermissionTree() {
+        List<Map> data = new ArrayList<>();
+        List<PermissionDomain> permissionList = sysPermissionMapper.getAll();
+        // 先获取权限树级结构，从一级遍历到三级
+        List<MenuRespVo> menuList= MenuRespVo.getMenuList(permissionList);
+        for(MenuRespVo menuRespVo : menuList){
+            HashMap<String, String> map = new HashMap<>();
+            map.put("id", menuRespVo.getId().toString());
+            map.put("title", menuRespVo.getTitle());
+            map.put("level", "1");
+            data.add(map);
+            // 遍历二级菜单
+            if(menuRespVo.getChildren() != null){
+                for(MenuRespVo menuRespVo1 : menuRespVo.getChildren()){
+                    HashMap<String, String> map1 = new HashMap<>();
+                    map1.put("id", menuRespVo1.getId().toString());
+                    map1.put("title", menuRespVo1.getTitle());
+                    map1.put("level", "2");
+                    data.add(map1);
+                    // 遍历三级菜单
+                    if(menuRespVo1.getChildren() != null){
+                        for(MenuRespVo menuRespVo2 : menuRespVo1.getChildren()){
+                            HashMap<String, String> map2 = new HashMap<>();
+                            map2.put("id", menuRespVo2.getId().toString());
+                            map2.put("title", menuRespVo2.getTitle());
+                            map2.put("level", "3");
+                            data.add(map2);
+                        }
+                    }
+                }
+            }
+
+        }
+        return R.ok(data);
+    }
+
+    @Override
+    public R addPermission(PermissionAddVo permissionAddVo) {
+        SysPermission sysPermission = SysPermission.builder().
+                id(idWorker.nextId()).
+                code(permissionAddVo.getCode()).
+                title(permissionAddVo.getTitle()).
+                icon(permissionAddVo.getIcon()).
+                perms(permissionAddVo.getPerms()).
+                url(permissionAddVo.getUrl()).
+                method(permissionAddVo.getMethod()).
+                name(permissionAddVo.getName()).
+                pid(permissionAddVo.getPid()).
+                orderNum(permissionAddVo.getOrderNum()).
+                type(permissionAddVo.getType()).
+                status(1).
+                createTime(DateTime.now()).
+                updateTime(DateTime.now()).
+                deleted(1).
+                build();
+        sysPermissionMapper.insert(sysPermission);
+        return R.ok();
+    }
+
+    @Override
+    public R updatePermission(PermissionAddVo permissionAddVo) {
+        // 根据权限id获取数据库对象
+        SysPermission sysPermission = sysPermissionMapper.selectByPrimaryKey(permissionAddVo.getId());
+        if(sysPermission == null){
+            return R.error(ResponseCode.ACCOUNT_NOT_EXISTS);
+        }
+        // 更新权限信息
+        sysPermission.setCode(permissionAddVo.getCode());
+        sysPermission.setTitle(permissionAddVo.getTitle());
+        sysPermission.setIcon(permissionAddVo.getIcon());
+        sysPermission.setPerms(permissionAddVo.getPerms());
+        sysPermission.setUrl(permissionAddVo.getUrl());
+        sysPermission.setMethod(permissionAddVo.getMethod());
+        sysPermission.setName(permissionAddVo.getName());
+        sysPermission.setPid(permissionAddVo.getPid());
+        sysPermission.setOrderNum(permissionAddVo.getOrderNum());
+        sysPermission.setType(permissionAddVo.getType());
+        sysPermission.setUpdateTime(DateTime.now());
+        sysPermissionMapper.updateByPrimaryKey(sysPermission);
+        return R.ok();
+    }
+
+    @Override
+    public R deletePermission(String permissionId) {
+        // 删除权限
+        sysPermissionMapper.deleteByPrimaryKey(Long.parseLong(permissionId));
+        return R.ok();
+    }
+
 
 }

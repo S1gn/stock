@@ -33,4 +33,5 @@ public class LoginRespVo {
     private Integer status; // 状态
     private List<MenuRespVo> menus; // 菜单
     private List<String> permissions; // 权限
+    private String accessToken; // 访问令牌
 }

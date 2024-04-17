@@ -35,7 +35,7 @@
             `stock_business` as tmp
         WHERE
             tmp.stock_code LIKE CONCAT(#{searchStr},'%')
-        LIMIT 10;
+        LIMIT 10
     </select>
     <select id="getStockDescribeByCode" resultType="map">
         SELECT

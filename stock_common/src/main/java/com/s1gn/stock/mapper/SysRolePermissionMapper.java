@@ -32,4 +32,20 @@ public interface SysRolePermissionMapper {
      * @return void
      **/
     void insertBatch(@Param("rolePermissions") List<SysRolePermission> rolePermissions);
+    /**
+     * @Auther s1gn
+     * @Description 根据角色id查询权限ID list
+     * @Date 2024/4/17 14:01
+     * @param roleId
+     * @return {@link List< String> }
+     **/
+    List<String> getPermissionsByRoleId(@Param("roleId") String roleId);
+    /**
+     * @Auther s1gn
+     * @Description 根据角色id删除角色权限关联表
+     * @Date 2024/4/17 14:15
+     * @param roleId
+     * @return void
+     **/
+    void deleteByRoleId(@Param("roleId") String roleId);
 }

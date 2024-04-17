@@ -39,7 +39,7 @@
         WHERE
             tp.cur_time BETWEEN #{startDate} and #{endDate}
         ORDER BY curTime DESC, curPoint DESC
-            LIMIT 4;
+            LIMIT 4
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

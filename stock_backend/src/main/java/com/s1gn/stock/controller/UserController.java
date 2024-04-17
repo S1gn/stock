@@ -1,8 +1,10 @@
 package com.s1gn.stock.controller;
 
+import com.s1gn.stock.pojo.entity.SysPermission;
 import com.s1gn.stock.pojo.entity.SysUser;
 import com.s1gn.stock.service.UserService;
 import com.s1gn.stock.vo.req.LoginReqVo;
+import com.s1gn.stock.vo.req.PermissionAddVo;
 import com.s1gn.stock.vo.req.UpdateUserReqVo;
 import com.s1gn.stock.vo.req.UserReqVo;
 import com.s1gn.stock.vo.resp.LoginRespVo;
@@ -125,5 +127,100 @@ public class UserController {
     @PostMapping("/role")
     public R addRolePermission(@RequestBody Map<String, Object> rolePermission) {
         return userService.addRolePermission(rolePermission);
+    }
+    /**
+     * @Auther s1gn
+     * @Description 获取角色关联的所有权限
+     * @Date 2024/4/17 14:00
+     * @param roleId
+     * @return {@link R< List< String>> }
+     **/
+    @GetMapping("/role/{roleId}")
+    public R<List<String>> getRolePermission(@PathVariable("roleId") String roleId) {
+        return userService.getRolePermission(roleId);
+    }
+    /**
+     * @Auther s1gn
+     * @Description 更新角色权限
+     * @Date 2024/4/17 14:09
+     * @param rolePermission
+     * @return {@link R }
+     **/
+    @PutMapping("/role")
+    public R updateRolePermission(@RequestBody Map<String, Object> rolePermission) {
+        return userService.updateRolePermission(rolePermission);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 删除角色权限
+     * @Date 2024/4/17 14:19
+     * @param roleId
+     * @return {@link R }
+     **/
+    @DeleteMapping("/role/{roleId}")
+    public R deleteRolePermission(@PathVariable("roleId") String roleId) {
+        return userService.deleteRolePermission(roleId);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 更新角色状态信息
+     * @Date 2024/4/17 14:22
+     * @param roleId
+     * @param status
+     * @return {@link R }
+     **/
+    @PostMapping("/role/{roleId}/{status}")
+    public R updateRoleStatus(@PathVariable("roleId") String roleId, @PathVariable("status") Integer status) {
+        return userService.updateRoleStatus(roleId, status);
+    }
+    /**
+     * @Auther s1gn
+     * @Description 获取所有权限
+     * @Date 2024/4/17 14:33
+     * @return {@link R< List< SysPermission>> }
+     **/
+    @GetMapping("/permissions")
+    public R<List<SysPermission>> getAllPermissions() {
+        return userService.getAllPermissions();
+    }
+    /**
+     * @Auther s1gn
+     * @Description 添加权限时回显权限树,仅仅显示目录和菜单
+     * @Date 2024/4/17 14:34
+     * @return {@link R< List< Map>> }
+     **/
+    @GetMapping("/permissions/tree")
+    public R<List<Map>> getPermissionTree() {
+        return userService.getPermissionTree();
+    }
+
+    @PostMapping("/permission")
+    public R addPermission(@RequestBody PermissionAddVo permissionAddVo) {
+        return userService.addPermission(permissionAddVo);
+    }
+
+    /**
+     * @Auther s1gn
+     * @Description 更新权限
+     * @Date 2024/4/17 14:59
+     * @param permissionAddVo
+     * @return {@link R }
+     **/
+    @PutMapping("/permission")
+    public R updatePermission(@RequestBody PermissionAddVo permissionAddVo) {
+        return userService.updatePermission(permissionAddVo);
+    }
+    /**
+     * @Auther s1gn
+     * @Description 删除权限
+     * @Date 2024/4/17 15:01
+     * @param permissionId
+     * @return {@link R }
+     **/
+    @DeleteMapping("/permission/{permissionId}")
+    public R deletePermission(@PathVariable("permissionId") String permissionId) {
+        return userService.deletePermission(permissionId);
     }
 }

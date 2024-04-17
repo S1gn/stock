@@ -26,9 +26,16 @@ public interface SysPermissionMapper {
     int updateByPrimaryKey(SysPermission record);
     /**
      * @Auther s1gn
-     * @Description 获取所有权限
+     * @Description 获取所有权限，用于菜单用
      * @Date 2024/4/16 22:32
      * @return {@link List< PermissionDomain> }
      **/
     List<PermissionDomain> getAll();
+    /**
+     * @Auther s1gn
+     * @Description 获取所有权限，获取permission对象
+     * @Date 2024/4/17 14:27
+     * @return {@link List< SysPermission> }
+     **/
+    List<SysPermission> getAllPermissions();
 }
