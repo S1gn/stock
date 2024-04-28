@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.impl.LaissezFaireSubTypeValidator;
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.s1gn.stock.constant.StockConstant;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
@@ -27,54 +23,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @ClassName RedisCacheConfig
- * @Description redis序列化方式，避免默认jdk乱码，体积大
+ * @ClassName CacheConfig
+ * @Description 缓存配置
  * @Author S1gn
- * @Date 15:05
+ * @Date 2024/4/26 15:25
  * @Version 1.0
  */
 @Configuration
 @EnableCaching
 public class CacheConfig {
     /**
-     * @Auther s1gn
-     * @Description 自定义模板对象，保证bean的名称是redisTemplate，保证注入时只注入自定义的这个
-     * @Date 2024/3/21 15:11
-     * @Param * @param redisConnectionFactory
-     * @Return * @return {@link RedisTemplate }
-     **/
+     * 定义序列化方式
+     * @return
+     */
     @Bean
-    public RedisTemplate redisTemplate(@Autowired RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        //设置key序列化方式
-        redisTemplate.setKeySerializer(new StringRedisSerializer());
-        //设置value序列化方式
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
-        //设置hash key序列化方式
-        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
-        //设置hash value序列化方式
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<Object>(Object.class));
-        //初始化
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
-    }
-    /**
-     * @Auther s1gn
-     * @Description 使用caffeine作为缓存
-     * @Date 2024/4/5 20:38
-     * @return {@link Cache< String, Object> }
-     **/
-    @Bean
-    public Cache<String, Object>caffeineCache(){
-        Cache<String, Object> cache = Caffeine.newBuilder()
-//                .expireAfterWrite(1, TimeUnit.MINUTES) // 写入后1分钟过期
-//                .expireAfterAccess(1) // 访问后1分钟过期
-                .maximumSize(200) // 最大容量
-                .initialCapacity(100) // 初始容量
-                .recordStats() // 开启统计功能
-                .build();
-        return cache;
+    public StringRedisSerializer stringRedisSerializer(){
+        return new StringRedisSerializer();
     }
 
     /**
@@ -131,5 +95,4 @@ public class CacheConfig {
         //设置缓存缺省超时时间
         return config.entryTtl(ttl);
     }
-
 }

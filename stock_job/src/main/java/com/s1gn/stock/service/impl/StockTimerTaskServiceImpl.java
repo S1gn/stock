@@ -3,6 +3,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.s1gn.stock.constant.ParseType;
+import com.s1gn.stock.face.StockCacheFace;
 import com.s1gn.stock.mapper.*;
 import com.s1gn.stock.pojo.entity.StockBlockRtInfo;
 import com.s1gn.stock.pojo.entity.StockMarketIndexInfo;
@@ -68,6 +69,8 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
     @Autowired
     private StockOuterMarketIndexInfoMapper stockOuterMarketIndexInfoMapper;
+    @Autowired
+    private StockCacheFace stockCacheFace;
     @Override
     public void getInnerMarketInfo() {
         // 采集原始数据
@@ -145,8 +148,7 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
 
     @Override
     public void getInnerStockMarketInfo() {
-        List<String> allStockCodes = stockBusinessMapper.getAllStockCodes();
-        allStockCodes = allStockCodes.stream().map(code -> code.startsWith("6") ? "sh" + code : "sz" + code).collect(Collectors.toList());
+        List<String> allStockCodes = stockCacheFace.getAllStockCodeWithPrefix();
         // 将股票集合拆分成多个集合
         List<List<String>> partition = Lists.partition(allStockCodes, 15);
         partition.forEach(codeList->{

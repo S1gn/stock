@@ -12,8 +12,10 @@ import com.s1gn.stock.vo.resp.MenuRespVo;
 import com.s1gn.stock.vo.resp.PageResult;
 import com.s1gn.stock.vo.resp.R;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.PermitAll;
 import java.util.List;
 import java.util.Map;
 /**
@@ -48,11 +50,11 @@ public class UserController {
      * @Param * @param loginReqVo
      * @Return * @return {@link com.s1gn.stock.vo.resp.LoginRespVo }
      **/
-    @PostMapping("/login")
-    public R<LoginRespVo> login(@RequestBody LoginReqVo loginReqVo) {
-        R<LoginRespVo> r = userService.login(loginReqVo);
-        return r;
-    }
+//    @PostMapping("/login")
+//    public R<LoginRespVo> login(@RequestBody LoginReqVo loginReqVo) {
+//        R<LoginRespVo> r = userService.login(loginReqVo);
+//        return r;
+//    }
     /**
      * @Auther s1gn
      * @Description 生成图片验证码
@@ -72,6 +74,7 @@ public class UserController {
      * @param userReqVo
      * @return {@link null }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:user:list')")
     @PostMapping("/users")
     public R<PageResult> getUserByPage(@RequestBody UserReqVo userReqVo) {
         return userService.getUserByPage(userReqVo);
@@ -84,46 +87,54 @@ public class UserController {
      * @return {@link R }
      **/
     // TODO: 创建人员的信息暂时没有处理
+    @PreAuthorize("hasAnyAuthority('sys:user:add')")
     @PostMapping("/user")
     public R addUser(@RequestBody SysUser sysUser) {
         return userService.addUser(sysUser);
     }
 
+    @PreAuthorize("hasAnyAuthority('sys:role:detail')")
     @GetMapping("/user/roles/{userId}")
     public R<Map> getUserRoles(@PathVariable("userId") String userId) {
         return userService.getUserRoles(userId);
     }
 
     @PutMapping("/user/roles")
+    @PreAuthorize("hasAnyAuthority('sys:user:role:update')")
     public R updateUserRoles(@RequestBody Map<String, Object> map) {
         return userService.updateUserRoles(map);
     }
 
+    @PreAuthorize("hasAnyAuthority('sys:user:delete')")
     @DeleteMapping("/user")
     public R deleteUser(@RequestBody List<Long> userIds) {
         return userService.deleteUserList(userIds);
     }
 
+    @PermitAll
     @GetMapping("/user/info/{userId}")
     public R<Map> getUserInfo(@PathVariable("userId") String userId) {
         return userService.getUserInfo(userId);
     }
-
+    @PreAuthorize("hasAnyAuthority('sys:user:update')")
     @PutMapping("/user")
     public R updateUser(@RequestBody UpdateUserReqVo newUser) {
         return userService.updateUser(newUser);
     }
 
+    @PreAuthorize("hasAnyAuthority('sys:role:list')")
     @PostMapping("/roles")
     public R<PageResult> getRolesByPage(@RequestBody Map pageInfo) {
         return userService.getRolesByPage(pageInfo);
     }
 
+    @PermitAll
     @GetMapping("/permissions/tree/all")
     public R<List<MenuRespVo>> getAllPermissionTree() {
         return userService.getAllPermissionTree();
     }
 
+    @PreAuthorize("hasAnyAuthority('sys:role:add')")
     @PostMapping("/role")
     public R addRolePermission(@RequestBody Map<String, Object> rolePermission) {
         return userService.addRolePermission(rolePermission);
@@ -135,6 +146,7 @@ public class UserController {
      * @param roleId
      * @return {@link R< List< String>> }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:role:detail')")
     @GetMapping("/role/{roleId}")
     public R<List<String>> getRolePermission(@PathVariable("roleId") String roleId) {
         return userService.getRolePermission(roleId);
@@ -146,6 +158,7 @@ public class UserController {
      * @param rolePermission
      * @return {@link R }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:role:update')")
     @PutMapping("/role")
     public R updateRolePermission(@RequestBody Map<String, Object> rolePermission) {
         return userService.updateRolePermission(rolePermission);
@@ -158,6 +171,7 @@ public class UserController {
      * @param roleId
      * @return {@link R }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:role:delete')")
     @DeleteMapping("/role/{roleId}")
     public R deleteRolePermission(@PathVariable("roleId") String roleId) {
         return userService.deleteRolePermission(roleId);
@@ -171,6 +185,7 @@ public class UserController {
      * @param status
      * @return {@link R }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:role:update')")
     @PostMapping("/role/{roleId}/{status}")
     public R updateRoleStatus(@PathVariable("roleId") String roleId, @PathVariable("status") Integer status) {
         return userService.updateRoleStatus(roleId, status);
@@ -181,6 +196,7 @@ public class UserController {
      * @Date 2024/4/17 14:33
      * @return {@link R< List< SysPermission>> }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:permission:list')")
     @GetMapping("/permissions")
     public R<List<SysPermission>> getAllPermissions() {
         return userService.getAllPermissions();
@@ -191,11 +207,13 @@ public class UserController {
      * @Date 2024/4/17 14:34
      * @return {@link R< List< Map>> }
      **/
+    @PermitAll
     @GetMapping("/permissions/tree")
     public R<List<Map>> getPermissionTree() {
         return userService.getPermissionTree();
     }
 
+    @PreAuthorize("hasAnyAuthority('sys:permission:add')")
     @PostMapping("/permission")
     public R addPermission(@RequestBody PermissionAddVo permissionAddVo) {
         return userService.addPermission(permissionAddVo);
@@ -208,6 +226,7 @@ public class UserController {
      * @param permissionAddVo
      * @return {@link R }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:permission:update')")
     @PutMapping("/permission")
     public R updatePermission(@RequestBody PermissionAddVo permissionAddVo) {
         return userService.updatePermission(permissionAddVo);
@@ -219,6 +238,7 @@ public class UserController {
      * @param permissionId
      * @return {@link R }
      **/
+    @PreAuthorize("hasAnyAuthority('sys:permission:delete')")
     @DeleteMapping("/permission/{permissionId}")
     public R deletePermission(@PathVariable("permissionId") String permissionId) {
         return userService.deletePermission(permissionId);

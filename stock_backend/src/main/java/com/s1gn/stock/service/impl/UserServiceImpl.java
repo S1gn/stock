@@ -138,7 +138,7 @@ public class UserServiceImpl implements UserService {
         //7.生成responseVo
         LoginRespVo respVo = new LoginRespVo();
         BeanUtils.copyProperties(user, respVo); //必须保证属性，名称相同
-        respVo.setUserName(user.getUsername());
+        respVo.setUsername(user.getUsername());
         respVo.setSex(user.getSex());
         respVo.setNickName(user.getNickName());
         respVo.setStatus(user.getStatus());

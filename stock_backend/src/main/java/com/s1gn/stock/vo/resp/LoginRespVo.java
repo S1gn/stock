@@ -25,7 +25,7 @@ public class LoginRespVo {
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id; // 用户id
     private String phone; // 手机号
-    private String userName; // 用户名
+    private String username; // 用户名
     private String nickName; // 昵称
     private String realName; // 真实姓名
     private String email; // 邮箱

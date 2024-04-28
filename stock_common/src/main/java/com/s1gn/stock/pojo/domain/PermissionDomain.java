@@ -24,5 +24,6 @@ public class PermissionDomain {
     private String name; // 菜单名称
     private int type; // 菜单类型
     private String pid; // 父菜单id
+    private String perms;
 
 }

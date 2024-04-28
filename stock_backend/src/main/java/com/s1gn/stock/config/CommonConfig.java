@@ -25,10 +25,10 @@ public class CommonConfig {
      * @Param 
      * @Return * @return {@link PasswordEncoder }
      **/
-    @Bean
-    public PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
+//    @Bean
+//    public PasswordEncoder passwordEncoder(){
+//        return new BCryptPasswordEncoder();
+//    }
 
     /**
      * @Auther s1gn

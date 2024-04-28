@@ -58,7 +58,8 @@
                      sp.url AS path,
                      sp.NAME,
                      sp.type,
-                     sp.pid
+                     sp.pid,
+                     sp.perms
         FROM
             sys_role_permission AS srp
                 LEFT JOIN sys_permission AS sp ON srp.permission_id = sp.id

@@ -71,7 +71,7 @@ public class StockServiceImpl implements StockService {
             // 获取最新交易时间，精确到分钟，秒和毫秒为0
             DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
             Date curDate = curDateTime.toDate();
-            curDate = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//            curDate = DateTime.parse("2022-01-02 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
             // 获取大盘编码集合
             List<String> innerCode = stockInfoConfig.getInner();
             // 调用mapper查询大盘数据
@@ -95,7 +95,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date curDate = curDateTime.toDate();
-        curDate = DateTime.parse("2021-12-21 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        curDate = DateTime.parse("2021-12-21 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 调用mapper查询大盘数据
         List<StockBlockDomain> data = stockBlockRtInfoMapper.sectorAllLimit(curDate);
         // 封装返回结果
@@ -114,7 +114,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date curDate = curDateTime.toDate();
-        curDate = DateTime.parse("2021-12-30 09:42:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        curDate = DateTime.parse("2021-12-30 09:42:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 设置分页参数
         PageHelper.startPage(page, pageSize);
         // mapper查询数据
@@ -136,7 +136,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date curDate = curDateTime.toDate();
-        curDate = DateTime.parse("2021-12-30 09:42:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        curDate = DateTime.parse("2021-12-30 09:42:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // mapper查询数据
         List<StockUpdownDomain> data = stockBlockRtInfoMapper.getStockIncreaseInfo(curDate);
         // 封装返回结果
@@ -148,11 +148,11 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间与开盘时间
         DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date curTime = curDateTime.toDate();
-        curTime= DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        curTime= DateTime.parse("2022-01-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         //1.2 获取最新交易时间对应的开盘时间
         DateTime openDate = DateTimeUtil.getOpenDate(curDateTime);
         Date openTime = openDate.toDate();
-        openTime= DateTime.parse("2022-01-06 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        openTime= DateTime.parse("2022-01-06 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 统计涨停数据
         List<Map> upCount = stockBlockRtInfoMapper.getStockUpDownCount(openTime, curTime, 1);
         // 统计跌停数据
@@ -202,15 +202,15 @@ public class StockServiceImpl implements StockService {
         Date tEndDate = tEndDateTime.toDate();
         Date tstartDate = DateTimeUtil.getOpenDate(tEndDateTime).toDate();
         //TODO  mock数据
-        tstartDate=DateTime.parse("2022-01-03 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-        tEndDate=DateTime.parse("2022-01-03 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        tstartDate=DateTime.parse("2022-01-03 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        tEndDate=DateTime.parse("2022-01-03 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 获取T-1日开盘点和最新时间
         DateTime preTEndDateTime = DateTimeUtil.getPreviousTradingDay(tEndDateTime);
         Date preTEndDate = preTEndDateTime.toDate();
         Date preTStartDate = DateTimeUtil.getOpenDate(preTEndDateTime).toDate();
         //TODO  mock数据
-        preTStartDate=DateTime.parse("2022-01-02 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
-        preTEndDate=DateTime.parse("2022-01-02 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        preTStartDate=DateTime.parse("2022-01-02 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        preTEndDate=DateTime.parse("2022-01-02 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 获取T日和T-1日的每分钟交易量
         List<Map> tData = stockMarketIndexInfoMapper.getSumAmtInfo(tstartDate, tEndDate, stockInfoConfig.getInner());
         List<Map> preTData = stockMarketIndexInfoMapper.getSumAmtInfo(preTStartDate, preTEndDate, stockInfoConfig.getInner());
@@ -226,7 +226,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date curDate = curDateTime.toDate();
-        curDate = DateTime.parse("2022-01-06 9:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        curDate = DateTime.parse("2022-01-06 9:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 获取当日股票涨幅区间统计数量
         List<Map> data = stockBlockRtInfoMapper.getIncreaseRangeInfoByDate(curDate);
         // 优化排序结果
@@ -260,9 +260,9 @@ public class StockServiceImpl implements StockService {
         // 获取开盘时间和当前时间
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2021-12-30 14:47:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2021-12-30 14:47:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         Date openDate = DateTimeUtil.getOpenDate(endDateTime).toDate();
-        openDate=DateTime.parse("2021-12-30 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        openDate=DateTime.parse("2021-12-30 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 查询
         List<Stock4MinuteDomain> data = stockRtInfoMapper.getStock4MinuteInfo(openDate, endDate, stockCode);
         return R.ok(data);
@@ -273,9 +273,10 @@ public class StockServiceImpl implements StockService {
         // 获取起始时间和结束时间范围内的最后交易时间集合
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         DateTime startDateTime = endDateTime.minusMonths(3);
-        Date startDate=DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Date startDate = startDateTime.toDate();
+//        Date startDate=DateTime.parse("2022-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<Date> everyDayLastTime = stockRtInfoMapper.getEveryDayLastTime(startDate, endDate, stockCode);
         // 查询
         List<Stock4DayDomain> data = stockRtInfoMapper.getStock4DayInfoByTimeList(everyDayLastTime, stockCode);
@@ -288,9 +289,10 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2022-05-18 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2022-05-18 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         DateTime startDateTime = endDateTime.minusDays(1);
-        Date startDate=DateTime.parse("2022-05-17 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Date startDate = startDateTime.toDate();
+//        Date startDate=DateTime.parse("2022-05-17 15:58:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<Map<String, String>> data = stockOuterMarketIndexInfoMapper.getExternalIndexInfo(startDate, endDate);
         return R.ok(data);
     }
@@ -312,9 +314,10 @@ public class StockServiceImpl implements StockService {
         // 获取起始时间和结束时间
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         DateTime startDateTime = endDateTime.minusMonths(6);
-        Date startDate=DateTime.parse("2021-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Date startDate = startDateTime.toDate();
+//        Date startDate=DateTime.parse("2021-01-01 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 查询
         List<Stock4WeekDomain> data = stockRtInfoMapper.getStock4WeekInfo(startDate, endDate, stockCode);
         return R.ok(data);
@@ -325,7 +328,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         Stock4SecondDomain data = stockRtInfoMapper.getStock4SecondDetailInfo(endDate, stockCode);
         return R.ok(data);
     }
@@ -335,7 +338,7 @@ public class StockServiceImpl implements StockService {
         // 获取最新交易时间，精确到分钟，秒和毫秒为0
         DateTime endDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
         Date endDate = endDateTime.toDate();
-        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+//        endDate=DateTime.parse("2022-06-06 14:25:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         List<Map<String, String>> data = stockRtInfoMapper.getStock4SecondInfo(endDate, stockCode);
         return R.ok(data);
     }

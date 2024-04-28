@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.security.PermitAll;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -36,12 +37,12 @@ public class StockController {
      * @Param
      * @Return * @return {@link R< List< InnerMarketDomain>> }
      **/
-
+    @PermitAll
     @GetMapping("/index/all")
     public R<List<InnerMarketDomain>> getInnerMarketInfo(){
         return stockService.getInnerMarketInfo();
     }
-
+    @PermitAll
     @GetMapping("/sector/all")
     public R<List<StockBlockDomain>> sectorAll(){
         return stockService.sectorAllLimit();
@@ -54,6 +55,7 @@ public class StockController {
      * @param pageSize
      * @return {@link R< PageResult< StockUpdownDomain>> }
      **/
+    @PermitAll
     @GetMapping("/stock/all")
     public R<PageResult<StockUpdownDomain>> getStockInfoByPage(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                                                @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize)
@@ -66,6 +68,7 @@ public class StockController {
      * @Date 2024/3/26 16:52
      * @return {@link R< List< StockUpdownDomain>> }
      **/
+    @PermitAll
     @GetMapping("/stock/increase")
     public R<List<StockUpdownDomain>> getStockIncreaseInfo(){
         return stockService.getStockIncreaseInfo();
@@ -76,6 +79,7 @@ public class StockController {
      * @Date 2024/3/26 20:27
      * @return {@link R< Map< String, List>> }
      **/
+    @PermitAll
     @GetMapping("/stock/updown/count")
     public R<Map<String, List>> getStockUpDownCount(){
         return stockService.getStockUpDownCount();
@@ -89,6 +93,7 @@ public class StockController {
      * @param response
      * @return void
      **/
+    @PermitAll
     @GetMapping("/stock/export")
     public void exportStockUpDownInfo(@RequestParam(value = "page", required = false, defaultValue = "1") Integer page,
                                       @RequestParam(value = "pageSize", required = false, defaultValue = "20") Integer pageSize,
@@ -102,6 +107,7 @@ public class StockController {
      * @Date 2024/3/27 21:20
      * @return {@link R< Map< String, List>> }
      **/
+    @PermitAll
     @GetMapping("/stock/tradeAmt")
     public R<Map<String, List>> getCompareStockTradeAmt(){
         return stockService.getCompareStockTradeAmt();
@@ -113,6 +119,7 @@ public class StockController {
      * @Date 2024/3/27 21:50
      * @return {@link R< Map> }
      **/
+    @PermitAll
     @GetMapping("/stock/updown")
     public R<Map> getIncreaseRangeInfo()
     {
@@ -124,6 +131,7 @@ public class StockController {
      * @param stockCode 股票编码
      * @return {@link R< List< Stock4MinuteDomain>> }
      **/
+    @PermitAll
     @GetMapping("/stock/screen/time-sharing")
     public R<List<Stock4MinuteDomain>> getStockScreenTimeSharing(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenTimeSharing(stockCode);
@@ -135,6 +143,7 @@ public class StockController {
      * @param stockCode  股票编码
      * @return {@link R< List< Stock4DayDomain>> }
      **/
+    @PermitAll
     @GetMapping("/stock/screen/dkline")
     public R<List<Stock4DayDomain>> getStockScreenDKline(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenDKline(stockCode);
@@ -146,6 +155,7 @@ public class StockController {
      * @Date 2024/4/11 14:39
      * @return {@link R< List< Map>> }
      **/
+    @PermitAll
     @GetMapping("/external/index")
     public R<List<Map<String, String>>> getExternalIndex(){
         return stockService.getExternalIndex();
@@ -158,6 +168,7 @@ public class StockController {
      * @param searchStr
      * @return {@link R< List< Map< String, String>>> }
      **/
+    @PermitAll
     @GetMapping("/stock/search")
     public R<List<Map<String, String>>> getSimilarStock(@RequestParam(value = "searchStr", required = true)String searchStr){
         return stockService.getSimilarStock(searchStr);
@@ -170,6 +181,7 @@ public class StockController {
      * @param stockCode
      * @return {@link R< List< Map< String, String>>> }
      **/
+    @PermitAll
     @GetMapping("/stock/describe")
     public R<List<Map<String, String>>> getStockDescribe(@RequestParam(value = "code", required = true)String stockCode){
         return stockService.getStockDescribe(stockCode);
@@ -182,6 +194,7 @@ public class StockController {
      * @param stockCode
      * @return {@link R< List< Stock4WeekDomain>> }
      **/
+    @PermitAll
     @GetMapping("/stock/screen/weekkline")
     public R<List<Stock4WeekDomain>> getStockScreenWeekKline(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenWeekKline(stockCode);
@@ -194,6 +207,7 @@ public class StockController {
      * @param stockCode
      * @return {@link R< Stock4SecondDomain> }
      **/
+    @PermitAll
     @GetMapping("/stock/screen/second/detail")
     public R<Stock4SecondDomain> getStockScreenSecondDetail(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenSecondDetail(stockCode);
@@ -206,6 +220,7 @@ public class StockController {
      * @param stockCode
      * @return {@link null }
      **/
+    @PermitAll
     @GetMapping("/stock/screen/second")
     public R<List<Map<String, String>>> getStockScreenSecond(@RequestParam(value = "code", required = true) String stockCode){
         return stockService.getStockScreenSecond(stockCode);
